@@ -1,7 +1,7 @@
 services:
   # See https://render.com/docs/blueprint-spec for more info on render blueprints
   - type: web
-    name: InMoldCond_XAI_IM_Opt
+    name: XAI_based_IM_Opt
     env: python
     plan: free
     # A requirements.txt file must exist
