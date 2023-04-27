@@ -148,6 +148,7 @@ server = app.server
 
 explanation_text = 'This tool searches for optimized process parameters achieving a certain quality of the injection-molded product'\
                     + ' based on in-mold condition centered approach using machine learning (ML) and explainable artificial intelligence (XAI).'\
+                    + ' It is under development by Jinsu Gim, Chung-Yin Lin, and Lih-Sheng Turng, University of Wisconsin - Madison.'\
                     + ' Publications will be updated. Currently, the paper is under preparation. Any inquiries, please send an email to jgim@wisc.edu or turng@engr.wisc.edu.'
 
 app.layout = html.Div(
