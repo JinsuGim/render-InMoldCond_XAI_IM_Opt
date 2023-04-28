@@ -125,7 +125,7 @@ def update_pareto_front_by_partialObjs(Opt_Data, Obj_list):
     
     return new_Opt_Data
 
-PSP_ProcParam_Opt_Data = pd.read_csv('./Data/PSP_ProcParam_Opt_Data_TrialN5000.csv', index_col=0)
+PSP_ProcParam_Opt_Data = pd.read_csv('./Data/PSP_ProcParam_Opt_Data_TrialN1000.csv', index_col=0)
 rDiffPSP = pd.DataFrame(data=[], columns=[
                                           'PSP-P-t1', 'PSP-P-t2', 'PSP-P-t3', 'PSP-P-t4', 'PSP-P-t5', 'PSP-P-t6',
                                           'PSP-P-P2', 'PSP-P-P3', 'PSP-P-P4', 'PSP-P-P5', 
@@ -305,135 +305,184 @@ def update_PSP_Opt_Chart_by_WMAPE(WMAPE_range, PartWeight_range, Warp_ThickWall_
 
 ## Update by click data ##################################################################################################################################
 
+
 @app.callback(
-              [Output(component_id='PSP_Profile_Graph', component_property='figure'),
-              Output(component_id='Table_Quality', component_property='children'),
-              Output(component_id='Table_ProcParam', component_property='children')],
-              [Input(component_id='PSP_Opt_Graph', component_property='clickData')]
+    [Output(component_id='PSP_Profile_Graph', component_property='figure'),
+     Output(component_id='Table_Quality', component_property='children'),
+     Output(component_id='Table_ProcParam', component_property='children')],
+    [Input(component_id='PSP_Opt_Graph', component_property='clickData')]
 )
 def display_click_PSP(click_data):
-    
     if click_data == None:
         Trial_num = 0
-        opacity=0
-        
+        opacity = 0
+
     else:
         Trial_num = click_data['points'][0]['customdata']
-        opacity=1
-        
-    click_OptData = PSP_ProcParam_Opt_Data[ PSP_ProcParam_Opt_Data['Trial#'] == Trial_num ]
+        opacity = 1
+
+    click_OptData = PSP_ProcParam_Opt_Data[PSP_ProcParam_Opt_Data['Trial#'] == Trial_num]
 
     ## PSP profile display
-    rDiffPSP_target_toPlot = click_OptData[['Sugg-rDiffPSP-P-P2', 'Sugg-rDiffPSP-P-P3', 'Sugg-rDiffPSP-P-P4','Sugg-rDiffPSP-P-P5', 
-                                       'Sugg-rDiffPSP-P-t1', 'Sugg-rDiffPSP-P-t2', 'Sugg-rDiffPSP-P-t3', 'Sugg-rDiffPSP-P-t4', 'Sugg-rDiffPSP-P-t5', 'Sugg-rDiffPSP-P-t6', 
-                                       'Sugg-rDiffPSP-T-T1', 'Sugg-rDiffPSP-T-T2', 'Sugg-rDiffPSP-T-t1', 'Sugg-rDiffPSP-T-t2','Sugg-rDiffPSP-T-t3']].copy()
-    
+    rDiffPSP_target_toPlot = click_OptData[
+        ['Sugg-rDiffPSP-P-P2', 'Sugg-rDiffPSP-P-P3', 'Sugg-rDiffPSP-P-P4', 'Sugg-rDiffPSP-P-P5',
+         'Sugg-rDiffPSP-P-t1', 'Sugg-rDiffPSP-P-t2', 'Sugg-rDiffPSP-P-t3', 'Sugg-rDiffPSP-P-t4', 'Sugg-rDiffPSP-P-t5',
+         'Sugg-rDiffPSP-P-t6',
+         'Sugg-rDiffPSP-T-T1', 'Sugg-rDiffPSP-T-T2', 'Sugg-rDiffPSP-T-t1', 'Sugg-rDiffPSP-T-t2',
+         'Sugg-rDiffPSP-T-t3']].copy()
+
     for column_name in rDiffPSP_target_toPlot.columns:
-        rDiffPSP_target_toPlot.rename(columns={column_name:column_name[10:]}, inplace=True)
+        rDiffPSP_target_toPlot.rename(columns={column_name: column_name[10:]}, inplace=True)
     absPSP_target_toPlot = convertPSP(convertPSP(rDiffPSP_target_toPlot[rDiffPSP.columns], 'rDiff2diff'), 'diff2abs')
 
-    diffPSP_optimized_toPlot = click_OptData[['Feas-DiffPSP-P-t1', 'Feas-DiffPSP-P-t2', 'Feas-DiffPSP-P-t3', 'Feas-DiffPSP-P-t4', 'Feas-DiffPSP-P-t5', 'Feas-DiffPSP-P-t6',
-                                          'Feas-DiffPSP-P-P1', 'Feas-DiffPSP-P-P2', 'Feas-DiffPSP-P-P3', 'Feas-DiffPSP-P-P4', 'Feas-DiffPSP-P-P5', 'Feas-DiffPSP-P-P6',
-                                          'Feas-DiffPSP-T-t1', 'Feas-DiffPSP-T-t2', 'Feas-DiffPSP-T-t3', 'Feas-DiffPSP-T-T1', 'Feas-DiffPSP-T-T2','Feas-DiffPSP-T-T3']].copy()
-    
+    diffPSP_optimized_toPlot = click_OptData[
+        ['Feas-DiffPSP-P-t1', 'Feas-DiffPSP-P-t2', 'Feas-DiffPSP-P-t3', 'Feas-DiffPSP-P-t4', 'Feas-DiffPSP-P-t5',
+         'Feas-DiffPSP-P-t6',
+         'Feas-DiffPSP-P-P1', 'Feas-DiffPSP-P-P2', 'Feas-DiffPSP-P-P3', 'Feas-DiffPSP-P-P4', 'Feas-DiffPSP-P-P5',
+         'Feas-DiffPSP-P-P6',
+         'Feas-DiffPSP-T-t1', 'Feas-DiffPSP-T-t2', 'Feas-DiffPSP-T-t3', 'Feas-DiffPSP-T-T1', 'Feas-DiffPSP-T-T2',
+         'Feas-DiffPSP-T-T3']].copy()
+
     for column_name in diffPSP_optimized_toPlot.columns:
-        diffPSP_optimized_toPlot.rename(columns={column_name:column_name[9:]}, inplace=True)
+        diffPSP_optimized_toPlot.rename(columns={column_name: column_name[9:]}, inplace=True)
     absPSP_optimized_toPlot = convertPSP(diffPSP_optimized_toPlot, 'diff2abs')
 
-    Time_P_target = np.array(absPSP_target_toPlot).flatten()[0:6]*60
+    Time_P_target = np.array(absPSP_target_toPlot).flatten()[0:6] * 60
     Time_P_target = np.insert(Time_P_target, 0, 0)
     Time_P_target = np.append(Time_P_target, 60)
 
-    Value_P_target = np.array(absPSP_target_toPlot).flatten()[6:12]*1000
+    Value_P_target = np.array(absPSP_target_toPlot).flatten()[6:12] * 1000
     Value_P_target = np.insert(Value_P_target, 0, 0)
     Value_P_target = np.append(Value_P_target, 0)
 
-    Time_T_target = np.array(absPSP_target_toPlot).flatten()[12:15]*60
+    Time_T_target = np.array(absPSP_target_toPlot).flatten()[12:15] * 60
     Time_T_target = np.insert(Time_T_target, 0, 0)
     Time_T_target = np.append(Time_T_target, 60)
 
-    Value_T_target = np.array(absPSP_target_toPlot).flatten()[15:18]*205
+    Value_T_target = np.array(absPSP_target_toPlot).flatten()[15:18] * 205
     Value_T_target = np.insert(Value_T_target, 0, Value_T_target[0])
     Value_T_target = np.append(Value_T_target, Value_T_target[0])
-    
-    Time_P_optimized = np.array(absPSP_optimized_toPlot).flatten()[0:6]*60
+
+    Time_P_optimized = np.array(absPSP_optimized_toPlot).flatten()[0:6] * 60
     Time_P_optimized = np.insert(Time_P_optimized, 0, 0)
     Time_P_optimized = np.append(Time_P_optimized, 60)
-    
-    Value_P_optimized = np.array(absPSP_optimized_toPlot).flatten()[6:12]*1000
+
+    Value_P_optimized = np.array(absPSP_optimized_toPlot).flatten()[6:12] * 1000
     Value_P_optimized = np.insert(Value_P_optimized, 0, 0)
     Value_P_optimized = np.append(Value_P_optimized, 0)
 
-    Time_T_optimized = np.array(absPSP_optimized_toPlot).flatten()[12:15]*60
+    Time_T_optimized = np.array(absPSP_optimized_toPlot).flatten()[12:15] * 60
     Time_T_optimized = np.insert(Time_T_optimized, 0, 0)
     Time_T_optimized = np.append(Time_T_optimized, 60)
 
-    Value_T_optimized = np.array(absPSP_optimized_toPlot).flatten()[15:18]*205
+    Value_T_optimized = np.array(absPSP_optimized_toPlot).flatten()[15:18] * 205
     Value_T_optimized = np.insert(Value_T_optimized, 0, Value_T_optimized[0])
     Value_T_optimized = np.append(Value_T_optimized, Value_T_optimized[0])
 
-    P_target = pd.DataFrame(data = [Time_P_target, Value_P_target], index=['Time (s)', 'Cavity pressure (bar)']).T
-    T_target = pd.DataFrame(data = [Time_T_target, Value_T_target], index=['Time (s)', 'Mold surface temperature (degC)']).T
-    P_optimized = pd.DataFrame(data = [Time_P_optimized, Value_P_optimized], index=['Time (s)', 'Cavity pressure (bar)']).T
-    T_optimized = pd.DataFrame(data = [Time_T_optimized, Value_T_optimized], index=['Time (s)', 'Mold surface temperature (degC)']).T    
+    P_target = pd.DataFrame(data=[Time_P_target, Value_P_target], index=['Time (s)', 'Cavity pressure (bar)']).T
+    T_target = pd.DataFrame(data=[Time_T_target, Value_T_target],
+                            index=['Time (s)', 'Mold surface temperature (degC)']).T
+    P_optimized = pd.DataFrame(data=[Time_P_optimized, Value_P_optimized],
+                               index=['Time (s)', 'Cavity pressure (bar)']).T
+    T_optimized = pd.DataFrame(data=[Time_T_optimized, Value_T_optimized],
+                               index=['Time (s)', 'Mold surface temperature (degC)']).T
 
     fig_PSP_plot = make_subplots(specs=[[{"secondary_y": True}]])
     fig_PSP_plot.add_trace(go.Scatter(
-                                      x=P_target['Time (s)'], y=P_target['Cavity pressure (bar)'], opacity=opacity,
-                                      name='Target P',
-                                      line=dict(color='royalblue', width=4)
-                                      ),
-                            secondary_y=False
-                          )
+        x=P_target['Time (s)'], y=P_target['Cavity pressure (bar)'], opacity=opacity,
+        name='Target P',
+        line=dict(color='royalblue', width=4),
+        marker=dict(
+            color='royalblue',
+            size=15,
+            line=dict(
+                color='white',
+                width=3
+            )
+        )
+    ),
+        secondary_y=False
+    )
     fig_PSP_plot.add_trace(go.Scatter(
-                                      x=T_target['Time (s)'], y=T_target['Mold surface temperature (degC)'], opacity=opacity,
-                                      name='Target T',
-                                      line=dict(color='orange', width=4)
-                                     ),
-                            secondary_y=True
-                          )
+        x=T_target['Time (s)'], y=T_target['Mold surface temperature (degC)'], opacity=opacity,
+        name='Target T',
+        line=dict(color='orange', width=4),
+        marker=dict(
+            color='orange',
+            size=15,
+            line=dict(
+                color='white',
+                width=3
+            )
+        )
+    ),
+        secondary_y=True
+    )
     fig_PSP_plot.add_trace(go.Scatter(
-                                      x=P_optimized['Time (s)'], y=P_optimized['Cavity pressure (bar)'], opacity=opacity,
-                                      name='Feasible P',
-                                      line=dict(color='royalblue', width=4, dash='dot')
-                                      ),
-                            secondary_y=False
-                          )
+        x=P_optimized['Time (s)'], y=P_optimized['Cavity pressure (bar)'], opacity=opacity,
+        name='Feasible P',
+        line=dict(color='royalblue', width=4, dash='dot'),
+        marker=dict(
+            color='royalblue',
+            size=15,
+            line=dict(
+                color='white',
+                width=3
+            )
+        )
+    ),
+        secondary_y=False
+    )
     fig_PSP_plot.add_trace(go.Scatter(
-                                      x=T_optimized['Time (s)'], y=T_optimized['Mold surface temperature (degC)'], opacity=opacity,
-                                      name='Feasible T',
-                                      line=dict(color='orange', width=4, dash='dot')
-                                      ),
-                            secondary_y=True
-                          )
+        x=T_optimized['Time (s)'], y=T_optimized['Mold surface temperature (degC)'], opacity=opacity,
+        name='Feasible T',
+        line=dict(color='orange', width=4, dash='dot'),
+        marker=dict(
+            color='orange',
+            size=15,
+            line=dict(
+                color='white',
+                width=3
+            )
+        )
+    ),
+        secondary_y=True
+    )
 
     fig_PSP_plot.update_layout(
-                               xaxis_range=[0, 14],
-                               legend=dict(yanchor='top', y=0.99, xanchor='right', x=0.932),
-                               height=350,
-                               margin=dict(l=0, r=0, t=0, b=0),
+        xaxis_range=[0, 14],
+        legend=dict(yanchor='top', y=0.99, xanchor='right', x=0.932),
+        height=350,
+        margin=dict(l=0, r=0, t=0, b=0),
     )
     fig_PSP_plot.update_xaxes(title_text="Time (s)")
-    fig_PSP_plot.update_yaxes(range = [-20, 600], title_text="Cavity pressure (bar)", secondary_y=False)
-    fig_PSP_plot.update_yaxes(range = [18, 80], title_text="Mold surface temperature (℃)", secondary_y=True)
+    fig_PSP_plot.update_yaxes(range=[-20, 600], title_text="Cavity pressure (bar)", secondary_y=False)
+    fig_PSP_plot.update_yaxes(range=[18, 80], title_text="Mold surface temperature (℃)", secondary_y=True)
 
     ## Optimization result table display
     if click_data == None:
-        Quality_to_show = pd.DataFrame(data=['-', '-', '-'], index=['PartWeight (g)', 'Warp-ThickWall (mm)', 'Warp-ThinWall (mm)']).T
-        ProcParam_to_show = pd.DataFrame(data=['-', '-', '-', '-'], index=['ClntTemp (℃)', 'InjSpd (cm³/s)', 'PackPres (bar)', 'PackTime (s)']).T
+        Quality_to_show = pd.DataFrame(data=['-', '-', '-'],
+                                       index=['PartWeight (g)', 'Warp-ThickWall (mm)', 'Warp-ThinWall (mm)']).T
+        ProcParam_to_show = pd.DataFrame(data=['-', '-', '-', '-'],
+                                         index=['ClntTemp (℃)', 'InjSpd (cm³/s)', 'PackPres (bar)', 'PackTime (s)']).T
     else:
-        Quality_to_show = click_OptData[['Pred_PartWeight (g)', 'Pred_Warp-ThickWall (mm)', 'Pred_Warp-ThinWall (mm)']].copy()
+        Quality_to_show = click_OptData[
+            ['Pred_PartWeight (g)', 'Pred_Warp-ThickWall (mm)', 'Pred_Warp-ThinWall (mm)']].copy()
         for column_name in Quality_to_show.columns:
-            Quality_to_show.rename(columns={column_name:column_name[5:]}, inplace=True)
-            
-        ProcParam_to_show = click_OptData[['Opt_ClntTemp', 'Opt_InjSpd', 'Opt_PackPres', 'Opt_PackTime']].copy()*[100, 80, 1000, 60]
-        ProcParam_to_show.columns=['ClntTemp (℃)', 'InjSpd (mm³/s)', 'PackPres (bar)', 'PackTime (s)']
+            Quality_to_show.rename(columns={column_name: column_name[5:]}, inplace=True)
+
+        ProcParam_to_show = click_OptData[['Opt_ClntTemp', 'Opt_InjSpd', 'Opt_PackPres', 'Opt_PackTime']].copy() * [100,
+                                                                                                                    80,
+                                                                                                                    1000,
+                                                                                                                    60]
+        ProcParam_to_show.columns = ['ClntTemp (℃)', 'InjSpd (mm³/s)', 'PackPres (bar)', 'PackTime (s)']
 
     tbl_Quality = dbc.Table.from_dataframe(Quality_to_show.round(2))
     tbl_ProcParam = dbc.Table.from_dataframe(ProcParam_to_show.round(2))
-    
+
     return fig_PSP_plot, tbl_Quality, tbl_ProcParam
-    
+
+
 ##########################################################################################################################################################
 
-app.run_server(host = "localhost")
+app.run_server(host="localhost")
